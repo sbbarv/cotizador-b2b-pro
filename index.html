@@ -43,7 +43,6 @@
             margin-bottom: 15px;
         }
 
-        /* NUEVO EN CLASE 12: Cabecera de telemetría Cloud con indicador en vivo */
         .cabecera-cloud {
             display: flex;
             justify-content: space-between;
@@ -224,7 +223,6 @@
                 🚚 ENVÍO GRATIS (5+ unid. O > $50.000) | 🏷️ 10% DCTO B2B (> $200.000 Netos)
             </div>
 
-            <!-- NUEVO EN CLASE 12: Monitor de Servidor y Contador de SKUs -->
             <div class="cabecera-cloud">
                 <span>🟢 Servidor Cloud Activo (Vercel SSL)</span>
                 <span id="contadorSkus">📦 Catálogo: Cargando...</span>
@@ -265,7 +263,6 @@
     </div>
 
     <script>
-        // NUEVO EN CLASE 12: Ampliamos la bodega a 5 SKUs agregando Kit de Seguridad EPP
         const catalogoInicial = [
             { id: 1, nombre: "Caja de Tornillos Estructurales", precioNeto: 5000, stockDisponible: 50 },
             { id: 2, nombre: "Taladro Percutor Industrial",     precioNeto: 85000, stockDisponible: 8 },
@@ -316,7 +313,6 @@
             }
 
             selector.innerHTML = opcionesHTML;
-            // Muestra cuántos productos coinciden con el filtro vs el total del catálogo
             etiquetaSkus.innerHTML = "📦 Mostrando: " + coincidencias + " de " + catalogoBodega.length + " SKUs";
         }
 
@@ -437,7 +433,7 @@
                             "<th>P. Unitario</th>" +
                             "<th>Subtotal</th>" +
                             "<th class='no-imprimir'>Acción</th>" +
-                        </tr>" +
+                        "</tr>" +
                     "</thead>" +
                     "<tbody>" + filasTablaHTML + "</tbody>" +
                 "</table>" +
@@ -449,7 +445,7 @@
                 "<div class='fila-total'>GRAN TOTAL A PAGAR: $" + totalFinal + " CLP</div>" +
                 "<div class='acciones-cierre no-imprimir'>" +
                     "<button class='btn-whatsapp' onclick='enviarPorWhatsApp(" + totalFinal + ", " + unidadesAcumuladas + ")'>📲 Enviar WhatsApp</button>" +
-                    "<button class='btn-pdf' onclick='exportarCotizacionPDF()'>📄 Guardar como PDF</button>" +
+                    "<button class='btn-pdf' onclick='enviarAPDF()'>📄 Guardar como PDF</button>" +
                 "</div>";
         }
 
@@ -460,7 +456,7 @@
             window.open(urlWhatsApp, "_blank");
         }
 
-        function exportarCotizacionPDF() {
+        function enviarAPDF() {
             window.print();
         }
 
