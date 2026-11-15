@@ -268,10 +268,16 @@
             { id: 2, nombre: "Taladro Percutor Industrial",     precioNeto: 85000, stockDisponible: 8 },
             { id: 3, nombre: "Esmeril Angular Profesional",     precioNeto: 42000, stockDisponible: 3 },
             { id: 4, nombre: "Sierra Circular de Banco",        precioNeto: 120000, stockDisponible: 5 },
-            { id: 5, nombre: "Kit Guantes y Casco EPP Pro",     precioNeto: 18000, stockDisponible: 25 }
+            { id: 5, nombre: "Kit Guantes y Casco EPP Pro",     precioNeto: 18000, stockDisponible: 25 },
+            { id: 6, nombre: "Generador Eléctrico 3000W",       precioNeto: 250000, stockDisponible: 4 }
         ];
 
         let catalogoBodega = JSON.parse(localStorage.getItem("bodegaGuardada")) || catalogoInicial;
+        // Detector inteligente: si agregamos o quitamos productos en el código, sincroniza la bodega automáticamente
+if (catalogoBodega.length !== catalogoInicial.length) {
+    catalogoBodega = catalogoInicial;
+    localStorage.setItem("bodegaGuardada", JSON.stringify(catalogoBodega));
+}
         let carritoCompras = JSON.parse(localStorage.getItem("carritoArrayGuardado")) || [];
 
         let folioCotizacion = localStorage.getItem("folioGuardado");
