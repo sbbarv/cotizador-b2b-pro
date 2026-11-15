@@ -1,6 +1,6 @@
 <!-- ============================================================================ -->
-<!-- ARCHIVO: index.html (CLASE 10 - BUSCADOR EN VIVO + STOCK DINÁMICO EN LISTA)  -->
-<!-- PROPÓSITO: Cierre del Módulo 1 - Sistema Cotizador Mayorista B2B Completo    -->
+<!-- ARCHIVO: index.html (CLASE 12 - ARQUITECTURA CLOUD v2.1 + MONITOR DE SKUs)   -->
+<!-- PROPÓSITO: Sincronización Local/Nube y Separación de Estado Carrito vs Stock -->
 <!-- ============================================================================ -->
 
 <!DOCTYPE html>
@@ -8,7 +8,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Mayorista B2B - Buscador Inteligente Pro</title>
+    <title>Portal Mayorista Cloud v2.1 - B2B Pro</title>
 
     <style>
         body {
@@ -43,15 +43,18 @@
             margin-bottom: 15px;
         }
 
-        .insignia-memoria {
+        /* NUEVO EN CLASE 12: Cabecera de telemetría Cloud con indicador en vivo */
+        .cabecera-cloud {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             background-color: #f0fdf4;
             color: #15803d;
             border: 1px solid #bbf7d0;
-            padding: 6px 12px;
-            border-radius: 6px;
+            padding: 8px 12px;
+            border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
-            display: inline-block;
             margin-bottom: 15px;
         }
 
@@ -69,7 +72,6 @@
             background-color: #f8fafc;
         }
 
-        /* Estilo especial para destacar la barra buscadora en vivo */
         .input-buscador {
             border: 2px solid #3b82f6;
             background-color: #eff6ff;
@@ -222,20 +224,20 @@
                 🚚 ENVÍO GRATIS (5+ unid. O > $50.000) | 🏷️ 10% DCTO B2B (> $200.000 Netos)
             </div>
 
-            <div class="insignia-memoria">
-                🔍 Motor v1.0 Completo: Buscador en Vivo + Stock Dinámico + Tabla PDF
+            <!-- NUEVO EN CLASE 12: Monitor de Servidor y Contador de SKUs -->
+            <div class="cabecera-cloud">
+                <span>🟢 Servidor Cloud Activo (Vercel SSL)</span>
+                <span id="contadorSkus">📦 Catálogo: Cargando...</span>
             </div>
 
-            <h1>Portal Mayorista Cloud v2.0</h1>
+            <h1>Portal Mayorista Cloud v2.1</h1>
 
             <label>Nombre de la Empresa Cliente:</label>
             <input type="text" id="inputEmpresa" value="Constructora Cordillera SpA">
 
-            <!-- NUEVO EN CLASE 10: Caja buscadora con sensor oninput en tiempo real -->
             <label>🔎 Buscar Producto en Bodega (Filtro Instantáneo):</label>
-            <input type="text" id="inputBuscador" class="input-buscador" placeholder="Escribe para filtrar (ej: taladro, sierra, tornillo)..." oninput="filtrarCatalogo()">
+            <input type="text" id="inputBuscador" class="input-buscador" placeholder="Escribe para filtrar (ej: taladro, sierra, tornillo, guante)..." oninput="filtrarCatalogo()">
 
-            <!-- El selector ahora se llena automáticamente con JavaScript mostrando el Stock vivo -->
             <label>Seleccionar Producto Filtrado:</label>
             <select id="selectorProducto"></select>
 
@@ -244,7 +246,7 @@
 
             <div class="grupo-botones">
                 <button class="btn-agregar" onclick="agregarAlCarrito()">➕ Agregar al Pedido</button>
-                <button class="btn-limpiar" onclick="vaciarCarrito()">🗑️ Borrar Todo</button>
+                <button class="btn-limpiar" onclick="vaciarCarrito()">🗑️ Reiniciar Sistema</button>
             </div>
 
             <div id="cajaAlerta" class="mensaje-alerta"></div>
@@ -263,11 +265,13 @@
     </div>
 
     <script>
+        // NUEVO EN CLASE 12: Ampliamos la bodega a 5 SKUs agregando Kit de Seguridad EPP
         const catalogoInicial = [
             { id: 1, nombre: "Caja de Tornillos Estructurales", precioNeto: 5000, stockDisponible: 50 },
             { id: 2, nombre: "Taladro Percutor Industrial",     precioNeto: 85000, stockDisponible: 8 },
             { id: 3, nombre: "Esmeril Angular Profesional",     precioNeto: 42000, stockDisponible: 3 },
-            { id: 4, nombre: "Sierra Circular de Banco",        precioNeto: 120000, stockDisponible: 5 }
+            { id: 4, nombre: "Sierra Circular de Banco",        precioNeto: 120000, stockDisponible: 5 },
+            { id: 5, nombre: "Kit Guantes y Casco EPP Pro",     precioNeto: 18000, stockDisponible: 25 }
         ];
 
         let catalogoBodega = JSON.parse(localStorage.getItem("bodegaGuardada")) || catalogoInicial;
@@ -284,24 +288,17 @@
             document.getElementById("inputEmpresa").value = empresaMemoria;
         }
 
-        // Al arrancar la app, llenamos el selector de productos y dibujamos el carrito
-        
-        
         filtrarCatalogo();
         actualizarPantallaCarrito();
 
-        // =========================================================================
-        // NUEVA FUNCIÓN CLASE 10: MOTOR DE BÚSQUEDA Y FILTRADO EN TIEMPO REAL
-        // =========================================================================
         function filtrarCatalogo() {
-            // 1. Capturamos lo que escribió el usuario y lo convertimos a minúsculas
             const textoBusqueda = document.getElementById("inputBuscador").value.toLowerCase();
             const selector = document.getElementById("selectorProducto");
+            const etiquetaSkus = document.getElementById("contadorSkus");
             
             let opcionesHTML = "";
             let coincidencias = 0;
 
-            // 2. Recorremos la bodega verificando qué productos incluyen el texto buscado
             catalogoBodega.forEach(function(producto, indiceOriginal) {
                 const nombreEnMinusculas = producto.nombre.toLowerCase();
 
@@ -314,19 +311,19 @@
                 }
             });
 
-            // 3. Si ningún producto coincide con la búsqueda, mostramos aviso en el selector
             if (coincidencias === 0) {
                 opcionesHTML = "<option value='-1'>❌ Sin resultados para tu búsqueda...</option>";
             }
 
             selector.innerHTML = opcionesHTML;
+            // Muestra cuántos productos coinciden con el filtro vs el total del catálogo
+            etiquetaSkus.innerHTML = "📦 Mostrando: " + coincidencias + " de " + catalogoBodega.length + " SKUs";
         }
 
         function agregarAlCarrito() {
             const indice = Number(document.getElementById("selectorProducto").value);
             const alerta = document.getElementById("cajaAlerta");
 
-            // Protección por si intenta agregar cuando el buscador dice "Sin resultados (-1)"
             if (indice === -1) {
                 alerta.innerHTML = "❌ Selecciona un producto válido del buscador.";
                 return;
@@ -354,10 +351,10 @@
             carritoCompras.push(nuevoRenglon);
 
             guardarEstadoEnMemoria(empresaActual);
-document.getElementById("inputBuscador").value = ""; // Limpia el buscador automáticamente
-document.getElementById("inputCantidad").value = "1"; // Reinicia la cantidad a 1
-filtrarCatalogo(); // Como el buscador ya está vacío, vuelve a mostrar toda la bodega con su nuevo stock
-actualizarPantallaCarrito();
+            document.getElementById("inputBuscador").value = "";
+            document.getElementById("inputCantidad").value = "1";
+            filtrarCatalogo();
+            actualizarPantallaCarrito();
         }
 
         function eliminarDelCarrito(posicionEnCarrito) {
@@ -367,7 +364,7 @@ actualizarPantallaCarrito();
 
             const empresaActual = document.getElementById("inputEmpresa").value;
             guardarEstadoEnMemoria(empresaActual);
-            filtrarCatalogo(); // Actualiza el [Stock: X] devuelto en el selector al instante
+            filtrarCatalogo();
             actualizarPantallaCarrito();
         }
 
@@ -440,7 +437,7 @@ actualizarPantallaCarrito();
                             "<th>P. Unitario</th>" +
                             "<th>Subtotal</th>" +
                             "<th class='no-imprimir'>Acción</th>" +
-                        "</tr>" +
+                        </tr>" +
                     "</thead>" +
                     "<tbody>" + filasTablaHTML + "</tbody>" +
                 "</table>" +
@@ -468,7 +465,7 @@ actualizarPantallaCarrito();
         }
 
         function vaciarCarrito() {
-            const seguro = confirm("⚠️ ¿Estás seguro de vaciar todo el pedido y reiniciar el stock de bodega?");
+            const seguro = confirm("⚠️ ¿Estás seguro de vaciar todo el pedido y actualizar el catálogo a su estado original?");
             if (seguro) {
                 localStorage.clear();
                 location.reload();
