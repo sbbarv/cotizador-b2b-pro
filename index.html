@@ -1,17 +1,11 @@
-<!-- ============================================================================ -->
-<!-- ARCHIVO: index.html (CLASE 13 - ESTRUCTURA LIMPIA CON ARQUITECTURA MODULAR)  -->
-<!-- ============================================================================ -->
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portal Mayorista Cloud v2.2 - Modular</title>
-    <!-- CABLE 1: Conexión con la hoja de estilos externa -->
+    <title>Portal Mayorista Cloud v2.4 - CRUD Bodega</title>
     <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
     <div class="contenedor-principal">
         
@@ -25,15 +19,41 @@
 
         <div class="no-imprimir">
             <div class="barra-promo">
-                🚚 ENVÍO GRATIS (5+ unid. O > $50.000) | 🏷️ 10% DCTO B2B (> $200.000 Netos)
+                🚚 ENVÍO GRATIS (5+ unid. O mayor a $50.000) | 🏷️ 10% DCTO B2B (mayor a $200.000 Netos)
             </div>
 
             <div class="cabecera-cloud">
-                <span>🟢 Arquitectura Modular v2.2 Activa</span>
+                <span>🟢 Sistema Modular v2.4</span>
                 <span id="contadorSkus">📦 Catálogo: Cargando...</span>
+                <button class="btn-toggle-admin" onclick="alternarPanelAdmin()">⚙️ Modo Jefe de Bodega</button>
             </div>
 
-            <h1>Portal Mayorista Cloud v2.2</h1>
+            <!-- PANEL DE ADMINISTRACIÓN CRUD COMPLETO -->
+            <div id="panelAdmin" class="panel-admin" style="display: none;">
+                <h3>🛠️ Panel Jefe de Bodega — Gestión Total de Inventario</h3>
+                
+                <label>Nombre del Nuevo Producto Industrial:</label>
+                <input type="text" id="adminNombre" placeholder="Ej: Soldadora Inverter 200A">
+
+                <div class="fila-admin">
+                    <div class="columna-admin">
+                        <label>Precio Neto Unitario ($ CLP):</label>
+                        <input type="number" id="adminPrecio" placeholder="Ej: 95000" min="1">
+                    </div>
+                    <div class="columna-admin">
+                        <label>Stock Inicial (Unidades):</label>
+                        <input type="number" id="adminStock" placeholder="Ej: 15" min="1">
+                    </div>
+                </div>
+
+                <button class="btn-guardar-sku" onclick="crearNuevoProducto()">➕ Crear Nuevo SKU en Bodega</button>
+                <div id="alertaAdmin" class="mensaje-alerta-admin"></div>
+
+                <!-- NUEVA PIEZA: TABLA PARA EDITAR Y ELIMINAR SKUs EXISTENTES -->
+                <div id="tablaAdminBodega"></div>
+            </div>
+
+            <h1>Portal Mayorista Cloud v2.4</h1>
 
             <label>Nombre de la Empresa Cliente:</label>
             <input type="text" id="inputEmpresa" value="Constructora Cordillera SpA">
@@ -67,7 +87,6 @@
         </div>
     </div>
 
-    <!-- CABLE 2: Conexión con el motor JavaScript externo (Siempre al final del body) -->
     <script src="app.js"></script>
 </body>
 </html>
