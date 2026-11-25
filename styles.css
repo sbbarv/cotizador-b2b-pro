@@ -1,7 +1,3 @@
-/* ============================================================================ */
-/* ARCHIVO: styles.css (CLASE 13 - HOJA DE ESTILOS CORPORATIVA INDEPENDIENTE)   */
-/* ============================================================================ */
-
 body {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background-color: #f1f5f9;
@@ -46,6 +42,95 @@ body {
     font-size: 12px;
     font-weight: 600;
     margin-bottom: 15px;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.btn-toggle-admin {
+    background-color: #0f172a;
+    color: #f8fafc;
+    border: none;
+    border-radius: 6px;
+    padding: 6px 10px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-toggle-admin:hover {
+    background-color: #334155;
+}
+
+.panel-admin {
+    background-color: #fffbeb;
+    border: 2px solid #f59e0b;
+    border-radius: 10px;
+    padding: 18px;
+    margin-bottom: 20px;
+}
+
+.panel-admin h3 {
+    margin-top: 0;
+    margin-bottom: 12px;
+    color: #b45309;
+    font-size: 16px;
+}
+
+.fila-admin {
+    display: flex;
+    gap: 12px;
+}
+
+.columna-admin {
+    flex: 1;
+}
+
+.btn-guardar-sku {
+    width: 100%;
+    background-color: #d97706;
+    color: white;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 11px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.btn-guardar-sku:hover {
+    background-color: #b45309;
+}
+
+.mensaje-alerta-admin {
+    margin-top: 10px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.input-tabla-admin {
+    width: 78px;
+    padding: 5px 6px;
+    margin-bottom: 0;
+    font-size: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+
+.btn-actualizar-sku {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 5px 8px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-right: 4px;
+}
+
+.btn-actualizar-sku:hover {
+    background-color: #1d4ed8;
 }
 
 h1 { font-size: 22px; margin-top: 0; margin-bottom: 15px; color: #0f172a; }
@@ -85,6 +170,7 @@ select, input {
     border-radius: 8px;
     cursor: pointer;
 }
+
 .btn-agregar:hover { background-color: #1d4ed8; }
 
 .btn-limpiar {
@@ -121,7 +207,7 @@ select, input {
 }
 
 .btn-eliminar-fila {
-    background-color: #fee2f2;
+    background-color: #fee2e2;
     color: #dc2626;
     border: 1px solid #fecaca;
     border-radius: 6px;
@@ -130,6 +216,7 @@ select, input {
     font-weight: 700;
     cursor: pointer;
 }
+
 .btn-eliminar-fila:hover { background-color: #fca5a5; }
 
 .acciones-cierre {
